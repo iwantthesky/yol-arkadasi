@@ -11,10 +11,10 @@ namespace DortCuce.UnityGame.Editor
     public static class MotorCoopClosedDemoBuild
     {
         private const string ScenePath = "Assets/Scenes/YolArkadasi.unity";
-        private const string OutputPath = "Builds/ClosedDemo/Yol-Arkadasi-Kapali-Test.exe";
-        private const string DemoVersion = "0.5.1-demo.1";
+        private const string OutputPath = "Builds/ClosedDemo/Roadmates-Closed-Playtest.exe";
+        private const string DemoVersion = "0.6.0-demo.1";
 
-        [MenuItem("Yol Arkadaşı/03 Kapalı IL2CPP demo derle")]
+        [MenuItem("Roadmates/03 Build Closed IL2CPP Playtest")]
         public static void GenerateAndBuild()
         {
             Directory.CreateDirectory("../qa");
@@ -56,7 +56,7 @@ namespace DortCuce.UnityGame.Editor
         private static void ConfigureClosedDemo()
         {
             PlayerSettings.companyName = "Engin";
-            PlayerSettings.productName = "Yol Arkadaşı - Kapalı Test";
+            PlayerSettings.productName = "Roadmates - Closed Playtest";
             PlayerSettings.bundleVersion = DemoVersion;
             PlayerSettings.defaultScreenWidth = 1440;
             PlayerSettings.defaultScreenHeight = 900;

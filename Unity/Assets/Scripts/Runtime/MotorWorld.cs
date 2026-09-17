@@ -257,13 +257,13 @@ namespace DortCuce.UnityGame
                 for (int j = 0; j < 10; j++)
                     LocalBox("Checkpoint timing stripe", gate, new Vector3(-width * 0.5f + (j + 0.5f) * width / 10f, 0.02f, 0f), new Vector3(width / 10f, 0.015f, 0.55f), j % 2 == 0 ? Mat("ivory", Ivory) : Mat("teal", Teal));
             }
-            Sign(35f, 1, "YOL ARKADAŞI", "GAZ • VİTES • DENGE", false);
-            Sign(133f, -1, "VİRAJLAR", "BİRLİKTE HAFİFÇE YATIN", true);
-            Sign(282f, 1, "YAN RÜZGÂR", "DENGE EKİBİ HAZIR MI?", true);
-            Sign(373f, -1, "ASMA KÖPRÜ", "DÜŞÜK VİTES • SABİT GAZ", true);
-            Sign(463f, 1, "RAMPA", "ÖNCE HIZ • SONRA DENGE", true);
-            Sign(658f, -1, "SON TIRMANIŞ", "VİTESİ ERKEN KÜÇÜLTÜN", true);
-            Sign(832f, 1, "SON DURAK", "ÇAY 70 METRE İLERİDE", false);
+            Sign(35f, 1, "ROADMATES", "THROTTLE • GEARS • BALANCE", false);
+            Sign(133f, -1, "CORNERS", "LEAN TOGETHER", true);
+            Sign(282f, 1, "CROSSWIND", "BALANCE RIDER READY?", true);
+            Sign(373f, -1, "SUSPENSION BRIDGE", "LOW GEAR • STEADY THROTTLE", true);
+            Sign(463f, 1, "RAMP", "SPEED FIRST • BALANCE NEXT", true);
+            Sign(658f, -1, "FINAL CLIMB", "SHIFT DOWN EARLY", true);
+            Sign(832f, 1, "LAST STOP", "TEA 70 METERS AHEAD", false);
             for (float d = 15f; d < MotorCourse.Length; d += 18f)
             {
                 if (d > 394f && d < 461f) continue;
@@ -326,7 +326,7 @@ namespace DortCuce.UnityGame
             LocalBox("Building", root, new Vector3(side * 14f, 1.95f, 1f), new Vector3(6.5f, 3.9f, 7f), Mat("plaster", new Color(0.85f, 0.76f, 0.55f)));
             LocalBox("Terracotta roof", root, new Vector3(side * 14f, 4.02f, 1f), new Vector3(7.4f, 0.40f, 7.9f), Mat("orange", Orange));
             LocalBox("Shop sign", root, new Vector3(side * 14f, 3.11f, -2.58f), new Vector3(6.1f, 0.87f, 0.20f), Mat("teal", Teal));
-            Text(finish ? "SON DURAK  /  ÇAY" : "YOL ARKADAŞI", root, new Vector3(side * 14f, 3.14f, -2.7f), 0.24f, Ivory);
+            Text(finish ? "LAST STOP  /  TEA" : "ROADMATES", root, new Vector3(side * 14f, 3.14f, -2.7f), 0.24f, Ivory);
             LocalBox("Door", root, new Vector3(side * 14f, 1.14f, -2.53f), new Vector3(1.35f, 2.3f, 0.09f), Mat("teal", Teal));
             for (int i = -1; i <= 1; i += 2)
             {
@@ -361,7 +361,7 @@ namespace DortCuce.UnityGame
             for (int i = -1; i <= 1; i += 2)
                 LocalBox("Journey gate post", banner, new Vector3(i * gateWidth * 0.5f, 2.6f, 0f), new Vector3(0.23f, 5.2f, 0.23f), Mat("teal", Teal));
             LocalBox("Journey banner", banner, new Vector3(0f, 4.8f, 0f), new Vector3(gateWidth + 0.3f, 0.78f, 0.22f), Mat("orange", Orange));
-            Text(finish ? "BİRLİKTE BAŞARDINIZ" : "YOL ARKADAŞI", banner, new Vector3(0f, 4.82f, -0.13f), 0.25f, Ivory);
+            Text(finish ? "YOU MADE IT TOGETHER" : "ROADMATES", banner, new Vector3(0f, 4.82f, -0.13f), 0.25f, Ivory);
             if (finish)
             {
                 for (int i = 0; i < 14; i++)

@@ -50,7 +50,7 @@ namespace DortCuce.UnityGame
         {
             MotorSimulation sim = new MotorSimulation();
             sim.Step(new MotorInput { shift = 1 }, .02f);
-            Require(sim.State.gear == 0 && sim.State.message.Contains("debriyaj"), "Clutchless shift must be rejected and explained.");
+            Require(sim.State.gear == 0 && sim.State.message.Contains("clutch"), "Clutchless shift must be rejected and explained.");
             sim.Step(new MotorInput { clutch = .65f, shift = 1 }, .02f);
             Require(sim.State.gear == 0, "Clutch engagement threshold must be strict.");
             for (int i = 0; i < 8; i++) sim.Step(new MotorInput { clutch = 1f, shift = 1 }, .02f);

@@ -18,15 +18,15 @@ namespace DortCuce.UnityGame
         public void Build()
         {
             var asset = Resources.Load<GameObject>("Motorcycle/EnginMotor");
-            if (!asset) throw new InvalidOperationException("EnginMotor.fbx bulunamadı.");
+            if (!asset) throw new InvalidOperationException("EnginMotor.fbx was not found.");
             var model = Instantiate(asset, transform);
-            model.name = "Engin d.blend • oyun modeli";
+            model.name = "Engin d.blend • game model";
             foreach (var t in model.GetComponentsInChildren<Transform>())
             {
                 if (t.name == "FrontWheel") front = t;
                 if (t.name == "RearWheel") rear = t;
             }
-            if (!front || !rear) throw new InvalidOperationException("Motor teker pivotları eksik.");
+            if (!front || !rear) throw new InvalidOperationException("Motorcycle wheel pivots are missing.");
             if (transform.InverseTransformPoint(front.position).z < transform.InverseTransformPoint(rear.position).z)
                 model.transform.localRotation = Quaternion.Euler(0, 180, 0) * model.transform.localRotation;
             frontBase = front.localRotation; rearBase = rear.localRotation;
@@ -56,13 +56,13 @@ namespace DortCuce.UnityGame
             Color[] jackets = { new(.92f,.44f,.19f), new(.25f,.64f,.61f), new(.86f,.70f,.32f), new(.60f,.46f,.72f) };
             for (int i = 0; i < 4; i++)
             {
-                var rider = new GameObject("Yol arkadaşı " + (i + 1)).transform;
+                var rider = new GameObject("Roadmate " + (i + 1)).transform;
                 rider.SetParent(transform, false);
                 rider.localPosition = new Vector3(i < 2 ? 0 : (i == 2 ? -.39f : .39f), 1.00f, .27f - (i % 2) * .62f);
                 Make(rider,"Mont",PrimitiveType.Capsule,new(0,.22f,0),new(.30f,.24f,.25f),jackets[i]);
                 Make(rider,"Kask",PrimitiveType.Sphere,new(0,.61f,.05f),Vector3.one*.31f,new(.93f,.87f,.72f));
-                Make(rider,"Vizör",PrimitiveType.Sphere,new(0,.62f,.16f),new(.27f,.13f,.10f),new(.055f,.12f,.14f));
-                Make(rider,"Sırt çantası",PrimitiveType.Cube,new(0,.25f,-.17f),new(.25f,.3f,.14f),jackets[i]*.64f);
+                Make(rider,"Visor",PrimitiveType.Sphere,new(0,.62f,.16f),new(.27f,.13f,.10f),new(.055f,.12f,.14f));
+                Make(rider,"Backpack",PrimitiveType.Cube,new(0,.25f,-.17f),new(.25f,.3f,.14f),jackets[i]*.64f);
                 foreach (float side in new[]{-1f,1f})
                 {
                     var arm = Make(rider,"Kol",PrimitiveType.Capsule,new(side*.2f,.24f,.13f),new(.10f,.19f,.10f),jackets[i]);
@@ -72,7 +72,7 @@ namespace DortCuce.UnityGame
                 }
                 riders.Add(rider);
             }
-            var pole = Make(riders[3],"Denge çubuğu",PrimitiveType.Cylinder,new(0,.30f,.20f),new(.045f,1.25f,.045f),new(.82f,.76f,.56f));
+            var pole = Make(riders[3],"Balance pole",PrimitiveType.Cylinder,new(0,.30f,.20f),new(.045f,1.25f,.045f),new(.82f,.76f,.56f));
             pole.localRotation=Quaternion.Euler(0,0,90);
         }
 

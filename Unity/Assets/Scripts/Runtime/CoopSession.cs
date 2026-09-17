@@ -26,8 +26,8 @@ namespace DortCuce.UnityGame
         public int LocalSlot { get; private set; }
         public int PlayerCount { get; private set; } = 1;
         public int Capacity { get; private set; } = 4;
-        public string Status { get; private set; } = "Tek oyuncu — bütün kontroller sende.";
-        public string[] PlayerNames { get; private set; } = new[] { "Sürücü" };
+        public string Status { get; private set; } = "Solo practice — you control everything.";
+        public string[] PlayerNames { get; private set; } = new[] { "Driver" };
         public bool RemotePlaying { get; private set; }
         public BikeSnapshot RemoteState { get; private set; }
         public int RosterRevision { get; private set; }
@@ -114,7 +114,7 @@ namespace DortCuce.UnityGame
         Epoch _epoch;
         Link _server;
         bool _assigned;
-        string _localName = "Sürücü";
+        string _localName = "Driver";
         long _sendSequence;
         float _nextInput;
         float _nextSnapshot;
@@ -131,7 +131,7 @@ namespace DortCuce.UnityGame
             Capacity = Mathf.Clamp(capacity, 2, 4);
             if (port < 1024 || port > 65535)
             {
-                Status = "Port 1024–65535 arasında olmalı.";
+                Status = "Port must be between 1024 and 65535.";
                 return;
             }
             Epoch epoch = new Epoch();
@@ -144,7 +144,7 @@ namespace DortCuce.UnityGame
                 LocalSlot = 0;
                 PlayerNames = new[] { _localName };
                 RosterRevision++;
-                Status = "Oda açık • " + port + " • 1/" + Capacity;
+                Status = "Room open • " + port + " • 1/" + Capacity;
                 Thread thread = new Thread(() => AcceptLoop(epoch)) { IsBackground = true, Name = "Motor LAN accept" };
                 thread.Start();
             }
@@ -152,7 +152,7 @@ namespace DortCuce.UnityGame
             {
                 epoch.Dispose();
                 _epoch = null;
-                Status = "Oda açılamadı: " + ShortError(error);
+                Status = "Could not open room: " + ShortError(error);
             }
         }
 
@@ -162,14 +162,14 @@ namespace DortCuce.UnityGame
             address = (address ?? "").Trim();
             if (address.Length == 0 || address.Length > 253 || port < 1024 || port > 65535)
             {
-                Status = "Geçerli bir IP/adres ve 1024–65535 arası port gir.";
+                Status = "Enter a valid IP/address and a port between 1024 and 65535.";
                 return;
             }
             _localName = CleanName(name);
             IsClient = true;
             LocalSlot = -1;
             _assigned = false;
-            Status = "Bağlanılıyor: " + address + ":" + port;
+            Status = "Connecting: " + address + ":" + port;
             _lastServerMessage = Time.unscaledTime;
             Epoch epoch = new Epoch();
             _epoch = epoch;
@@ -181,7 +181,7 @@ namespace DortCuce.UnityGame
         public void Solo()
         {
             Leave();
-            Status = "Tek oyuncu — bütün kontroller sende.";
+            Status = "Solo practice — you control everything.";
         }
 
         public void Leave()
@@ -207,7 +207,7 @@ namespace DortCuce.UnityGame
             _publishedPlaying = false;
             _nextInput = _nextSnapshot = _nextPing = 0f;
             RosterRevision++;
-            Status = "Odadan ayrıldın.";
+            Status = "You left the room.";
         }
 
         /// <summary>Call once per rendered frame. Key-down pulses are buffered until one host physics tick consumes them.</summary>
@@ -268,7 +268,7 @@ namespace DortCuce.UnityGame
                     {
                         if (timedOut == null) timedOut = new List<int>();
                         timedOut.Add(item.Key);
-                        item.Value.Link.Close("Katılım süresi doldu.");
+                        item.Value.Link.Close("Join request timed out.");
                     }
                 }
                 if (timedOut != null)
@@ -293,7 +293,7 @@ namespace DortCuce.UnityGame
             {
                 if ((_server != null && _server.Closed) || now - _lastServerMessage > 10f)
                 {
-                    DisconnectClient("Ev sahibiyle bağlantı kesildi. Yeniden katılabilirsin.");
+                    DisconnectClient("Connection to the host was lost. You can join again.");
                     return;
                 }
                 if (_assigned && _server != null && now >= _nextInput)
@@ -312,8 +312,8 @@ namespace DortCuce.UnityGame
         {
             if (incoming.Kind == "error")
             {
-                if (IsClient) DisconnectClient("Bağlanılamadı: " + incoming.Text);
-                else { Leave(); Status = "Ağ hatası: " + incoming.Text; }
+                if (IsClient) DisconnectClient("Could not connect: " + incoming.Text);
+                else { Leave(); Status = "Network error: " + incoming.Text; }
                 return;
             }
             Link link = incoming.Link;
@@ -324,11 +324,11 @@ namespace DortCuce.UnityGame
             }
             if (incoming.Kind == "connected")
             {
-                if (!IsClient) { link.Close("Oda kapandı."); return; }
+                if (!IsClient) { link.Close("Room closed."); return; }
                 _server = link;
                 _lastServerMessage = Time.unscaledTime;
                 Send(link, new Packet { kind = "hello", name = _localName });
-                Status = "Bağlantı kuruldu, odaya katılınıyor…";
+                Status = "Connected. Joining room…";
                 return;
             }
             if (incoming.Kind == "closed")
@@ -336,7 +336,7 @@ namespace DortCuce.UnityGame
                 _pending.Remove(link.Id);
                 if (IsClient && link == _server)
                 {
-                    DisconnectClient("Ev sahibiyle bağlantı kesildi. Yeniden katılabilirsin.");
+                    DisconnectClient("Connection to the host was lost. You can join again.");
                     return;
                 }
                 if (IsHost)
@@ -351,11 +351,11 @@ namespace DortCuce.UnityGame
 
             Packet packet;
             try { packet = JsonUtility.FromJson<Packet>(incoming.Text); }
-            catch (Exception) { link.Close("Geçersiz ağ paketi."); return; }
+            catch (Exception) { link.Close("Invalid network packet."); return; }
             if (packet == null || packet.protocol != Protocol || string.IsNullOrEmpty(packet.kind))
             {
-                if (IsClient) DisconnectClient("Oyun sürümleri uyuşmuyor.");
-                else Reject(link, "Oyun sürümleri uyuşmuyor.");
+                if (IsClient) DisconnectClient("Game versions do not match.");
+                else Reject(link, "Game versions do not match.");
                 return;
             }
             if (IsHost) HandleHostPacket(link, packet);
@@ -368,13 +368,13 @@ namespace DortCuce.UnityGame
             if (packet.kind == "hello" && player == null && _pending.ContainsKey(link.Id))
             {
                 _pending.Remove(link.Id);
-                if (_players.Count + 1 >= Capacity) { Reject(link, "Oda dolu (" + Capacity + " kişi)."); return; }
+                if (_players.Count + 1 >= Capacity) { Reject(link, "Room is full (" + Capacity + " players)."); return; }
                 _players.Add(new Player { Link = link, Name = CleanName(packet.name) });
                 RebuildRoster();
                 return;
             }
-            if (player == null) { Reject(link, "Önce odaya katılmalısın."); return; }
-            if (packet.kind != "input") { link.Close("Beklenmeyen ağ paketi."); return; }
+            if (player == null) { Reject(link, "You must join the room first."); return; }
+            if (packet.kind != "input") { link.Close("Unexpected network packet."); return; }
             if (packet.revision != RosterRevision || packet.sequence <= player.Controls.Sequence) return;
             player.Controls.Sequence = packet.sequence;
             player.Controls.Set(MaskInput(packet.input, player.Slot, PlayerCount), Time.unscaledTime);
@@ -385,7 +385,7 @@ namespace DortCuce.UnityGame
             _lastServerMessage = Time.unscaledTime;
             if (packet.kind == "reject")
             {
-                string reason = packet.reason ?? "Odaya katılım reddedildi.";
+                string reason = packet.reason ?? "Room entry was rejected.";
                 DisconnectClient(reason.Length > 160 ? reason.Substring(0, 160) : reason);
             }
             else if (packet.kind == "roster")
@@ -393,7 +393,7 @@ namespace DortCuce.UnityGame
                 if (packet.count < 2 || packet.count > 4 || packet.capacity < packet.count || packet.capacity > 4 ||
                     packet.slot < 1 || packet.slot >= packet.count || packet.names == null || packet.names.Length != packet.count)
                 {
-                    DisconnectClient("Geçersiz oda bilgisi.");
+                    DisconnectClient("Invalid room information.");
                     return;
                 }
                 if (packet.revision != RosterRevision) _local.Reset();
@@ -404,7 +404,7 @@ namespace DortCuce.UnityGame
                 PlayerNames = new string[packet.count];
                 for (int i = 0; i < packet.count; i++) PlayerNames[i] = CleanName(packet.names[i]);
                 _assigned = true;
-                Status = "Bağlı • " + PlayerCount + "/" + Capacity + " • " + RoleLabel(LocalSlot, PlayerCount);
+                Status = "Connected • " + PlayerCount + "/" + Capacity + " • " + RoleLabel(LocalSlot, PlayerCount);
             }
             else if (packet.kind == "state")
             {
@@ -432,7 +432,7 @@ namespace DortCuce.UnityGame
                 Send(_players[i].Link, new Packet { kind = "roster", slot = i + 1, count = PlayerCount,
                     capacity = Capacity, names = PlayerNames, revision = RosterRevision });
             _nextSnapshot = 0f;
-            Status = "Oda açık • " + PlayerCount + "/" + Capacity + " • " + RoleLabel(0, PlayerCount);
+            Status = "Room open • " + PlayerCount + "/" + Capacity + " • " + RoleLabel(0, PlayerCount);
         }
 
         void DisconnectClient(string reason)
@@ -457,11 +457,11 @@ namespace DortCuce.UnityGame
 
         public static string RoleLabel(int slot, int count)
         {
-            if (count < 1 || count > 4 || slot < 0 || slot >= count) return "Katılıyor…";
-            if (count == 1) return "Tüm kontroller";
-            if (count == 2) return slot == 0 ? "Gaz · fren · direksiyon" : "Debriyaj · vites · denge";
-            if (count == 3) return slot == 0 ? "Gaz · fren · direksiyon" : slot == 1 ? "Debriyaj · vites" : "Denge";
-            return slot == 0 ? "Gaz · fren" : slot == 1 ? "Debriyaj · vites" : slot == 2 ? "Direksiyon" : "Denge";
+            if (count < 1 || count > 4 || slot < 0 || slot >= count) return "Joining…";
+            if (count == 1) return "All controls";
+            if (count == 2) return slot == 0 ? "Throttle · brake · steering" : "Clutch · gears · balance";
+            if (count == 3) return slot == 0 ? "Throttle · brake · steering" : slot == 1 ? "Clutch · gears" : "Balance";
+            return slot == 0 ? "Throttle · brake" : slot == 1 ? "Clutch · gears" : slot == 2 ? "Steering" : "Balance";
         }
 
         public static MotorInput MaskInput(MotorInput input, int slot, int count)
@@ -507,7 +507,7 @@ namespace DortCuce.UnityGame
                 if (!char.IsControl(letter) && letter != '<' && letter != '>') result.Append(letter);
                 if (result.Length == 24) break;
             }
-            return result.Length == 0 ? "Sürücü" : result.ToString();
+            return result.Length == 0 ? "Driver" : result.ToString();
         }
 
         public static string LocalAddresses()
@@ -572,7 +572,7 @@ namespace DortCuce.UnityGame
                 Closed = true;
                 try { if (Listener != null) Listener.Stop(); } catch (SocketException) { }
                 lock (_connectLock) { if (_connecting != null) _connecting.Close(); _connecting = null; }
-                foreach (Link link in Links.Values) link.Close("Oda kapandı.");
+                foreach (Link link in Links.Values) link.Close("Room closed.");
                 Links.Clear();
             }
         }
@@ -611,7 +611,7 @@ namespace DortCuce.UnityGame
                 if (Interlocked.Increment(ref _queued) > 32)
                 {
                     Interlocked.Decrement(ref _queued);
-                    Close("Ağ gönderim kuyruğu doldu.");
+                    Close("Network send queue is full.");
                     return;
                 }
                 _outgoing.Enqueue(line);
@@ -647,23 +647,23 @@ namespace DortCuce.UnityGame
                             if (value == 10)
                             {
                                 if (rateWindow.ElapsedMilliseconds >= 1000) { messages = 0; rateWindow.Restart(); }
-                                if (++messages > 120) { Close("Çok fazla ağ paketi."); return; }
+                                if (++messages > 120) { Close("Too many network packets."); return; }
                                 if (length == 0) continue;
                                 string decoded = utf8.GetString(line, 0, length);
                                 length = 0;
                                 if (!_epoch.Enqueue(new NetEvent { Kind = "line", Link = this, Text = decoded }))
-                                { Close("Ağ alım kuyruğu doldu."); return; }
+                                { Close("Network receive queue is full."); return; }
                             }
                             else
                             {
-                                if (length == MaxLineBytes) { Close("Ağ paketi çok büyük."); return; }
+                                if (length == MaxLineBytes) { Close("Network packet is too large."); return; }
                                 line[length++] = value;
                             }
                         }
                     }
                 }
                 catch (Exception) { /* Socket closure, timeout, and invalid UTF-8 all disconnect this peer. */ }
-                finally { Close("Bağlantı kapandı."); }
+                finally { Close("Connection closed."); }
             }
             void WriteLoop()
             {
@@ -676,14 +676,14 @@ namespace DortCuce.UnityGame
                         {
                             Interlocked.Decrement(ref _queued);
                             byte[] data = Encoding.UTF8.GetBytes(line + "\n");
-                            if (data.Length > MaxLineBytes + 1) { Close("Ağ paketi çok büyük."); return; }
+                            if (data.Length > MaxLineBytes + 1) { Close("Network packet is too large."); return; }
                             _stream.Write(data, 0, data.Length);
                         }
-                        if (_finishWriting) { Close("Katılım reddedildi."); return; }
+                        if (_finishWriting) { Close("Join request rejected."); return; }
                         _signal.WaitOne(250);
                     }
                 }
-                catch (Exception) { Close("Ağ gönderimi kesildi."); }
+                catch (Exception) { Close("Network send interrupted."); }
                 // The signal remains owned by the short-lived Link so a concurrent Close never touches a disposed handle.
             }
         }
@@ -699,7 +699,7 @@ namespace DortCuce.UnityGame
                     Link link = new Link(epoch, socket);
                     epoch.Links[link.Id] = link;
                     if (epoch.Closed || !epoch.Enqueue(new NetEvent { Kind = "accepted", Link = link }))
-                    { link.Close("Oda kapandı."); continue; }
+                    { link.Close("Room closed."); continue; }
                     link.Start();
                 }
             }
@@ -718,14 +718,14 @@ namespace DortCuce.UnityGame
                 IAsyncResult pending = socket.BeginConnect(address, port, null, null);
                 using (WaitHandle wait = pending.AsyncWaitHandle)
                 {
-                    if (!wait.WaitOne(5000)) throw new TimeoutException("5 saniyede bağlantı kurulamadı.");
+                    if (!wait.WaitOne(5000)) throw new TimeoutException("Could not connect within 5 seconds.");
                     socket.EndConnect(pending);
                 }
                 if (epoch.Closed) { socket.Close(); return; }
                 Link link = new Link(epoch, socket);
                 epoch.Links[link.Id] = link;
                 if (epoch.Closed || !epoch.Enqueue(new NetEvent { Kind = "connected", Link = link }))
-                { link.Close("Bağlantı iptal edildi."); return; }
+                { link.Close("Connection cancelled."); return; }
                 link.Start();
             }
             catch (Exception error)
@@ -740,11 +740,11 @@ namespace DortCuce.UnityGame
             SocketException socket = error as SocketException;
             if (socket != null)
             {
-                if (socket.SocketErrorCode == SocketError.AddressAlreadyInUse) return "Bu port başka bir oda tarafından kullanılıyor.";
-                if (socket.SocketErrorCode == SocketError.ConnectionRefused) return "Oda bulunamadı; IP ve portu kontrol et.";
+                if (socket.SocketErrorCode == SocketError.AddressAlreadyInUse) return "This port is already used by another room.";
+                if (socket.SocketErrorCode == SocketError.ConnectionRefused) return "Room not found; check the IP and port.";
                 return socket.SocketErrorCode.ToString();
             }
-            return error is TimeoutException ? "Bağlantı zaman aşımına uğradı." : error.GetType().Name;
+            return error is TimeoutException ? "Connection timed out." : error.GetType().Name;
         }
     }
 }

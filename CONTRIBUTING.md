@@ -1,31 +1,28 @@
-# Yol Arkadaşı'na katkı
+# Contributing to Roadmates
+## Setup
 
-## Kurulum
+1. Clone the private repository.
+2. Open the `Unity` folder with Unity Hub.
+3. Use Unity `6000.3.18f1`.
+4. Open `Assets/Scenes/YolArkadasi.unity`.
 
-1. Depoyu klonla.
-2. Unity Hub ile `Unity` klasörünü aç.
-3. Unity `6000.3.18f1` kullan.
-4. Ana sahne olarak `Assets/Scenes/YolArkadasi.unity` dosyasını aç.
+Unity recreates `Library`, `Logs`, `UserSettings` and build folders locally. Do not commit them.
 
-`Library`, `Logs`, `UserSettings` ve build klasörleri depoya eklenmez. Unity bunları ilk açılışta yeniden üretir.
+## Branch workflow
 
-## Dal düzeni
+- `main` contains verified playable releases.
+- `dev` is the integration branch for the next release.
+- Create `feature/short-topic` or `fix/short-topic` branches from `dev`.
+- Open pull requests into `dev`. Release pull requests go from `dev` to `main`.
+- Do not push directly to `main`.
 
-- `main`: oynanabilir ve doğrulanmış sürüm.
-- `dev`: sıradaki sürümün birleşim dalı.
-- Yeni işler: `feature/kisa-konu` veya `fix/kisa-konu`.
+## Before requesting review
 
-Değişiklikleri önce kendi dalına gönder, ardından `dev` dalına pull request aç. Sürüm hazır olduğunda `dev`, pull request ile `main` dalına alınır. Doğrudan `main` üzerine çalışma yapma.
+- Commit Unity assets together with their `.meta` files.
+- Coordinate scene edits before starting large changes that may conflict.
+- For gameplay changes, test launch, falling/recovery and free-roam driving.
+- For networking changes, run `dotnet run --project tools/network-checks/NetworkChecks.csproj --configuration Release`.
+- Before a release, run **Roadmates → 02 Test and Build Windows** in Unity.
+- Record every third-party asset and its license in `docs/ASSETS.md`.
 
-## Değişiklik kontrolü
-
-- Unity sahne ve `.meta` dosyalarını birlikte commit et.
-- Başkasının sahne değişikliğiyle çakışabilecek büyük düzenlemeleri başlamadan önce ekibe yaz.
-- Oynanışı değiştiren işlerde solo kalkış, düşme/toparlanma ve serbest dolaşımı kontrol et.
-- Ağ kodunu değiştiren işlerde `tools/network-checks` kontrollerini çalıştır.
-- Unity menüsündeki **Yol Arkadaşı → Test et ve Windows derle** komutunu sürüm pull request'inden önce çalıştır.
-- Üçüncü taraf asset eklerken kaynak ve lisans bilgisini `docs/ASSETS.md` içine yaz.
-
-## Büyük ve yerel dosyalar
-
-Build, video, günlük, yedek ve Unity `Library` çıktıları GitHub'a gönderilmez. Ekip içi test build'leri ayrı dosya paylaşımı veya GitHub Release eki olarak paylaşılmalıdır.
+Builds, videos, logs, backups and Unity-generated folders stay outside Git. Playtest builds are distributed through the shared Google Drive package.

@@ -1,11 +1,10 @@
-# Antigravity asset set
+# Antigravity asset provenance
+The 21 models in this folder are original assets produced locally for Engin's project with Antigravity and Blender.
 
-Bu klasördeki 21 model Engin'in yerel Antigravity çalışmalarıyla Blender'da üretilen özgün assetlerdir.
+- Tree source workspace: `blender_trees`
+- Mountain source workspace: `blender_mountains`
+- Road and obstacle source workspace: `DangerousMountainRoad`
+- Mountain scenes were cleaned and converted to reusable FBX game assets.
+- Road placement was adapted from `DangerousRoadGenerator.cs` to match the game's 900-meter physics route.
 
-- Ağaç kaynakları: `C:/Users/Engin/.gemini/antigravity/scratch/blender_trees`
-- Dağ kaynakları: `C:/Users/Engin/.gemini/antigravity/scratch/blender_mountains`
-- Yol/engel kaynakları: `C:/Users/Engin/.gemini/antigravity/scratch/DangerousMountainRoad`
-- Dağ GLB'leri oyun için sahne konumlarından arındırılarak FBX'e dönüştürüldü.
-- Asfalt, arazi şeritleri ve yol yerleşimi `DangerousRoadGenerator.cs` tasarımından uyarlanıp mevcut sürüş fiziğinin 900 metrelik rotasına bağlandı.
-
-Bu modeller üçüncü taraf CC0 paketi olarak etiketlenmez; kullanıcıya ait yerel üretim assetleridir.
+These models are original user-owned project assets and are not labelled as a third-party CC0 package.
