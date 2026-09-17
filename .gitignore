@@ -1,0 +1,51 @@
+# Unity generated folders
+/Unity/[Ll]ibrary/
+/Unity/[Tt]emp/
+/Unity/[Oo]bj/
+/Unity/[Ll]ogs/
+/Unity/[Uu]ser[Ss]ettings/
+/Unity/[Bb]uild/
+/Unity/[Bb]uilds/
+/Unity/[Mm]emoryCaptures/
+/Unity/[Rr]ecordings/
+
+# Local release, QA and production artifacts
+/backups/
+/media/
+/release/
+/qa/
+/outputs/
+
+# IDE and operating system
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Test/build outputs
+**/bin/
+**/obj/
+TestResults/
+
+# Keep lightweight, reviewed acceptance summaries
+!/qa/
+/qa/*
+!/qa/V0.3-ACCEPTANCE.md
+!/qa/V0.4-ACCEPTANCE.md
+!/qa/V0.5-ACCEPTANCE.md
+!/qa/V0.5.1-ACCEPTANCE.md
+

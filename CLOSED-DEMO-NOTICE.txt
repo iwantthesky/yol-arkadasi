@@ -1,0 +1,34 @@
+YOL ARKADASI - KAPALI TEST DEMOSU
+=================================
+
+Surum: 0.5.1-demo.1
+Build kimligi: ENGIN-CLOSED-ALPHA-20260916
+
+Bu paket yalnizca ozel oyun testi icindir.
+Lutfen paketi yeniden dagitmayin, herkese acik bir yere yuklemeyin ve dosyalari
+degistirerek baska bir urun gibi sunmayin.
+
+Kaynak kod bu pakete dahil degildir. Oyun IL2CPP release build olarak derlenmistir;
+debug sembolleri ve gelistirme dosyalari dagitim paketinden cikarilmistir.
+
+Calistirmak icin ZIP dosyasini tamamen ayri bir klasore cikartin ve
+Yol-Arkadasi-Kapali-Test.exe dosyasini acin. EXE'yi tek basina baska klasore
+tasimayin; yanindaki Data klasoru ve DLL dosyalari gereklidir.
+
+Windows imzalanmamis uygulama uyarisi gosterebilir. Dosyayi yalnizca Engin'in
+paylastigi ZIP ve SHA-256 degeriyle eslesiyorsa calistirin.
+
+Kontroller
+----------
+W/S: Gaz/fren
+A/D: Direksiyon
+SPACE: Debriyaji ayir
+Q/E: Vites kucult/buyut
+I: Mars
+Sol/Sag ok: Agirlik aktarimi
+H/C/M: Rehber/kamera/ses
+ESC: Duraklat/menu
+
+Not: Hicbir masaustu oyun paketi tamamen kopyalanamaz veya tersine muhendislik
+yapilamaz degildir. Bu build, kaynak kodu vermemek ve tersine muhendisligi
+belirgin bicimde zorlastirmak icin hazirlanmistir.
