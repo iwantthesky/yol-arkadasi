@@ -52,7 +52,7 @@ namespace DortCuce.UnityGame
             world=new GameObject("900 metre • Son Durak").AddComponent<MotorWorld>();world.Build();
             bike=new GameObject("Engin Motor").AddComponent<MotorBikeView>();bike.Build();
             bike.transform.position=MotorWorld.Point(0);
-            follow=new GameObject("Yol kamerası").AddComponent<Camera>();
+            follow=new GameObject("Road camera").AddComponent<Camera>();
             follow.tag="MainCamera";follow.nearClipPlane=.08f;follow.farClipPlane=650;follow.fieldOfView=58;
             follow.backgroundColor=new(.64f,.75f,.72f);follow.clearFlags=CameraClearFlags.Skybox;
             follow.gameObject.AddComponent<AudioListener>();
@@ -221,90 +221,90 @@ namespace DortCuce.UnityGame
         private void Home()
         {
             Box(0,0,570,900,Ink);Box(40,49,35,4,Gold);
-            Text(89,36,420,40,"DÖRT CÜCE BİR MOTOR  /  CO-OP",small,Gold);
-            Text(40,107,600,148,"YOL\nARKADAŞI",title);
-            Text(43,267,465,68,"Dört kişi. Tek motor.\nSon durağa birlikte ulaşın.",body);
-            Text(43,362,450,26,"TAKMA ADIN",small);playerName=Field(43,393,468,playerName,20);
-            Text(43,459,450,25,"EKİP KAPASİTESİ",small);
-            for(int i=2;i<=4;i++)if(Button(43+(i-2)*158,493,150,42,i+" KİŞİ",capacity==i))capacity=i;
-            if(Button(43,554,468,57,"EKİBİ KUR   →",true))
-            {session.Host(string.IsNullOrWhiteSpace(playerName)?"Sürücü":playerName,capacity);page=Page.Lobby;}
+            Text(89,36,420,40,"FOUR RIDERS, ONE BIKE  /  CO-OP",small,Gold);
+            Text(40,107,600,148,"ROAD\nMATES",title);
+            Text(43,267,465,68,"Four riders. One motorcycle.\nReach the final stop together.",body);
+            Text(43,362,450,26,"DISPLAY NAME",small);playerName=Field(43,393,468,playerName,20);
+            Text(43,459,450,25,"TEAM SIZE",small);
+            for(int i=2;i<=4;i++)if(Button(43+(i-2)*158,493,150,42,i+" PLAYERS",capacity==i))capacity=i;
+            if(Button(43,554,468,57,"CREATE TEAM   →",true))
+            {session.Host(string.IsNullOrWhiteSpace(playerName)?"Driver":playerName,capacity);page=Page.Lobby;}
             address=Field(43,629,302,address,64);
-            if(Button(355,629,156,48,"KATIL")){session.Join(address,string.IsNullOrWhiteSpace(playerName)?"Yolcu":playerName);page=Page.Lobby;}
-            Text(43,687,470,40,"Aynı yerel ağdaki veya VPN ağındaki arkadaşının IP adresi.",small);
-            if(Button(43,750,468,46,"TEK BAŞINA ANTRENMAN"))StartRide(true);
-            Text(43,823,470,48,"900 m rota + serbest harita  •  manuel şanzıman  •  gerçek denge\nMotor: Engin / d.blend  ·  Çevre: Antigravity özgün assetleri",small);
-            Box(1040,62,346,100,new(.035f,.09f,.105f,.80f));Text(1064,80,290,25,"ROTA 01 / SON DURAK",small,Gold);
-            Text(1064,113,310,40,"Antigravity Dağ Geçidi",body);
-            Text(965,817,420,42,"Bir kişi gaz verir. Herkes sorumludur.",small,Cream);
+            if(Button(355,629,156,48,"JOIN")){session.Join(address,string.IsNullOrWhiteSpace(playerName)?"Passenger":playerName);page=Page.Lobby;}
+            Text(43,687,470,40,"Enter your friend's IP on the same LAN or VPN.",small);
+            if(Button(43,750,468,46,"SOLO PRACTICE"))StartRide(true);
+            Text(43,823,470,48,"900 m route + open map  •  manual gearbox  •  player-controlled balance\nBike: Engin / d.blend  ·  World: original Antigravity assets",small);
+            Box(1040,62,346,100,new(.035f,.09f,.105f,.80f));Text(1064,80,290,25,"ROUTE 01 / LAST STOP",small,Gold);
+            Text(1064,113,310,40,"Antigravity Mountain Pass",body);
+            Text(965,817,420,42,"One rider accelerates. Everyone matters.",small,Cream);
         }
 
         private void Lobby()
         {
             Box(155,75,1130,747,Ink);
-            Text(201,108,910,36,"YOL ARKADAŞI   /   EKİP GARAJI",small,Gold);
-            Text(199,151,950,67,session.IsHost?"Ekibini topla.":"Yola birlikte çıkın.",big);
+            Text(201,108,910,36,"ROADMATES   /   TEAM GARAGE",small,Gold);
+            Text(199,151,950,67,session.IsHost?"Gather your team.":"Ride together.",big);
             Text(201,230,1030,52,session.Status,body);
-            if(session.IsHost)Text(201,281,1020,44,"Bağlantı adresin: "+CoopSession.LocalAddresses()+"  •  TCP 47777",small,Teal);
+            if(session.IsHost)Text(201,281,1020,44,"Your connection address: "+CoopSession.LocalAddresses()+"  •  TCP 47777",small,Teal);
             for(int i=0;i<4;i++)
             {
                 int y=342+i*69;Box(201,y,1038,58,i==session.LocalSlot?new(.14f,.30f,.30f):new(.07f,.17f,.19f));
                 string name=i<session.PlayerNames.Length?session.PlayerNames[i]:"";
                 bool occupied=i<session.PlayerCount;
                 Text(223,y+15,60,35,(i+1).ToString("00"),body,occupied?Gold:Muted);
-                Text(290,y+15,330,35,occupied?name:"Arkadaş bekleniyor…",body,occupied?Cream:Muted);
+                Text(290,y+15,330,35,occupied?name:"Waiting for a roadmate…",body,occupied?Cream:Muted);
                 Text(676,y+18,540,40,occupied?CoopSession.RoleLabel(i,session.PlayerCount):"",small,Teal);
             }
-            Text(201,643,990,45,"Oyuncu sayısı değişince görevler yeniden paylaşılır. Herkes kendi rolündeki tuşları kullanır.",small);
-            if(Button(201,726,244,50,"← GERİ")){session.Leave();page=Page.Home;}
+            Text(201,643,990,45,"Roles are reassigned when the player count changes. Each rider uses only their role controls.",small);
+            if(Button(201,726,244,50,"← BACK")){session.Leave();page=Page.Home;}
             if(session.IsHost)
-            {if(Button(734,726,505,50,"BİRLİKTE YOLA ÇIK   →",true,session.PlayerCount>=2))StartRide(false);}
-            else Text(730,739,490,42,session.IsConnected?"Ev sahibinin başlatması bekleniyor…":"Bağlantı bekleniyor…",body);
+            {if(Button(734,726,505,50,"START THE RIDE   →",true,session.PlayerCount>=2))StartRide(false);}
+            else Text(730,739,490,42,session.IsConnected?"Waiting for the host to start…":"Waiting for connection…",body);
         }
 
         private void RideHud()
         {
-            Box(32,28,330,83,Ink);Text(52,40,300,24,"YOL ARKADAŞI / SON DURAK",small,Gold);
+            Box(32,28,330,83,Ink);Text(52,40,300,24,"ROADMATES / LAST STOP",small,Gold);
             Text(52,70,302,31,Chapter(state.distance),body);
-            Box(465,28,510,73,Ink);Text(485,40,430,30,state.finished?$"SERBEST SÜRÜŞ   •   {state.distance:0} m":$"{Mathf.Clamp(state.distance,0,900):0} / 900 m   •   KAMP {state.checkpoint+1}",small);
+            Box(465,28,510,73,Ink);Text(485,40,430,30,state.finished?$"FREE ROAM   •   {state.distance:0} m":$"{Mathf.Clamp(state.distance,0,900):0} / 900 m   •   CAMP {state.checkpoint+1}",small);
             Box(485,77,470,5,new(.20f,.31f,.31f));Box(485,77,470*Mathf.Clamp01(state.distance/900),5,Gold);
-            Box(1078,28,330,83,Ink);Text(1098,42,298,24,$"{session.PlayerCount} KİŞİ  •  {state.elapsed/60:00}:{state.elapsed%60:00}",small,Teal);
-            Text(1098,73,292,30,session.IsOnline?(session.IsHost?"EKİP LİDERİ":"BAĞLI") : "ANTRENMAN",small);
+            Box(1078,28,330,83,Ink);Text(1098,42,298,24,$"{session.PlayerCount} PLAYERS  •  {state.elapsed/60:00}:{state.elapsed%60:00}",small,Teal);
+            Text(1098,73,292,30,session.IsOnline?(session.IsHost?"TEAM LEADER":"CONNECTED") : "PRACTICE",small);
 
             Box(32,666,254,198,Ink);
-            Text(52,680,180,74,$"{state.speed*3.6f:00}",title);Text(193,729,70,26,"km/sa",small);
-            Text(52,764,177,30,$"{state.rpm:0} dev/dk",small,state.engineRunning?Muted:new Color(1,.4f,.3f));
+            Text(52,680,180,74,$"{state.speed*3.6f:00}",title);Text(193,729,70,26,"km/h",small);
+            Text(52,764,177,30,$"{state.rpm:0} rpm",small,state.engineRunning?Muted:new Color(1,.4f,.3f));
             Box(52,806,204,7,new(.18f,.30f,.30f));Box(52,806,204*Mathf.Clamp01(state.rpm/8500),7,state.rpm>6800?Gold:Teal);
-            Text(52,827,204,25,state.engineRunning?"MOTOR ÇALIŞIYOR":"STOP • SPACE + I",small);
-            Box(300,666,126,198,Ink);Text(324,682,96,32,"VİTES",small,Gold);
+            Text(52,827,204,25,state.engineRunning?"ENGINE RUNNING":"STALLED • SPACE + I",small);
+            Box(300,666,126,198,Ink);Text(324,682,96,32,"GEAR",small,Gold);
             Text(331,715,100,90,state.gear==0?"N":state.gear.ToString(),title);
             Text(324,826,96,25,"Q  /  E",small);
 
-            Box(449,746,542,118,Ink);Text(471,760,485,27,"DENGE  /  AĞIRLIK AKTARIMI",small,Gold);
+            Box(449,746,542,118,Ink);Text(471,760,485,27,"BALANCE  /  WEIGHT SHIFT",small,Gold);
             Box(479,811,480,5,new(.26f,.40f,.40f));Box(713,796,8,33,Cream);
             float leanX=719+Mathf.Clamp(state.lean,-1.1f,1.1f)/1.1f*224;
             Box(leanX-5,799,10,28,Mathf.Abs(state.lean)>.6f?new(1,.35f,.25f):Teal);
-            Text(479,838,160,23,"← SOL",small);Text(884,838,100,23,"SAĞ →",small);
+            Text(479,838,160,23,"← LEFT",small);Text(884,838,100,23,"RIGHT →",small);
 
-            Box(1013,666,395,198,Ink);Text(1034,681,350,25,"SENİN GÖREVİN",small,Gold);
+            Box(1013,666,395,198,Ink);Text(1034,681,350,25,"YOUR ROLE",small,Gold);
             Text(1034,713,350,55,CoopSession.RoleLabel(session.LocalSlot,session.PlayerCount),body);
             Text(1034,779,350,70,ControlsForRole(),small,Teal);
-            Text(34,876,1000,22,"ESC duraklat / menü     H rehber     C kamera     M ses     R motoru kaldır / son kampa dön",small);
+            Text(34,876,1000,22,"ESC pause / menu     H guide     C camera     M audio     R lift bike / return to camp",small);
             if(!string.IsNullOrEmpty(state.message))
             {Box(459,119,522,49,Ink);Text(479,132,480,36,state.message,small,Cream);}
             if(help&&state.distance<65&&!state.crashed)
             {
-                Box(34,138,377,219,Ink);Text(55,157,330,27,"İLK KALKIŞ",small,Gold);
-                Text(55,197,325,145,"1  SPACE ile debriyajı ayır.\n2  E ile birinci vitese al.\n3  W ile gaz ver, SPACE'i bırak.\n4  A / D gidonu çevirir.\n5  ← / → ile dönüşe doğru ağırlık ver.\nYol dışı dahil bütün harita sürülebilir.",small,Cream);
+                Box(34,138,377,219,Ink);Text(55,157,330,27,"FIRST LAUNCH",small,Gold);
+                Text(55,197,325,145,"1  Hold SPACE to disengage the clutch.\n2  Press E to shift into first gear.\n3  Hold W and release SPACE slowly.\n4  A / D steer the handlebars.\n5  ← / → shift weight into the turn.\nThe entire map is rideable, including off-road terrain.",small,Cream);
             }
             if(state.crashed)
             {
                 Box(420,271,600,309,Ink);
-                Text(455,307,535,63,"BİRLİKTE KALKIN",big,Cream);
+                Text(455,307,535,63,"LAUNCH TOGETHER",big,Cream);
                 Text(455,383,515,78,state.message,body);
                 if(!session.IsClient)
-                {if(Button(455,494,530,53,"SON KAMPTAN DEVAM",true))simulation.Respawn();}
-                else Text(455,507,535,48,"Ev sahibi devam ettirebilir.",body);
+                {if(Button(455,494,530,53,"CONTINUE FROM LAST CAMP",true))simulation.Respawn();}
+                else Text(455,507,535,48,"The host can continue the ride.",body);
             }
             if(paused)PausePanel();
         }
@@ -312,17 +312,17 @@ namespace DortCuce.UnityGame
         private string ControlsForRole()
         {
             var mask=CoopSession.MaskInput(new MotorInput{throttle=1,brake=1,steer=1,balance=1,clutch=1,shift=1,ignition=true},session.LocalSlot,session.PlayerCount);
-            string s="";if(mask.throttle>0)s+="W / S  gaz & fren\n";if(mask.steer>0)s+="A / D  direksiyon\n";
-            if(mask.clutch>0)s+="SPACE debriyaj · Q/E vites · I marş\n";if(mask.balance>0)s+="← / →  ağırlığı kaydır";return s.Trim();
+            string s="";if(mask.throttle>0)s+="W / S  throttle & brake\n";if(mask.steer>0)s+="A / D  steering\n";
+            if(mask.clutch>0)s+="SPACE clutch · Q/E gears · I ignition\n";if(mask.balance>0)s+="← / →  shift weight";return s.Trim();
         }
-        private static string Chapter(float d)=>d<0?"SERBEST ALAN":d<180?"01  •  ISINMA & SLALOM":d<360?"02  •  RÜZGÂR VADİSİ":d<540?"03  •  KÖPRÜ & SIÇRAYIŞ":d<720?"04  •  DAĞ GEÇİDİ":d<=900?"05  •  SON VİRAJ":"SERBEST SÜRÜŞ";
+        private static string Chapter(float d)=>d<0?"OPEN TERRAIN":d<180?"01  •  WARM-UP & SLALOM":d<360?"02  •  WIND VALLEY":d<540?"03  •  BRIDGE & JUMP":d<720?"04  •  MOUNTAIN PASS":d<=900?"05  •  FINAL CORNER":"FREE ROAM";
         private void PausePanel()
         {
-            Box(418,199,604,463,Ink);Text(458,239,510,60,"KISA BİR MOLA",big);
-            Text(458,322,510,88,session.IsClient?"Senin girişlerin bekletiliyor. Ekip lideri ortak sürüşü duraklatabilir.":"Yeni biri katıldıysa görevleri kontrol edin. Hazır olduğunuzda birlikte devam edin.",body);
-            if(Button(458,432,522,53,"DEVAM ET",true))paused=false;
-            if(Button(458,504,522,51,"GARAJA DÖN")){session.Leave();simulation.ResetRun();page=Page.Home;paused=false;}
-            if(Button(458,574,522,45,"OYUNDAN ÇIK"))Application.Quit();
+            Box(418,199,604,463,Ink);Text(458,239,510,60,"TAKE A BREAK",big);
+            Text(458,322,510,88,session.IsClient?"Your controls are paused. The team leader controls the shared pause.":"If someone joined, check the new roles. Continue together when everyone is ready.",body);
+            if(Button(458,432,522,53,"CONTINUE",true))paused=false;
+            if(Button(458,504,522,51,"RETURN TO GARAGE")){session.Leave();simulation.ResetRun();page=Page.Home;paused=false;}
+            if(Button(458,574,522,45,"QUIT GAME"))Application.Quit();
         }
 
         private void QaUpdate()

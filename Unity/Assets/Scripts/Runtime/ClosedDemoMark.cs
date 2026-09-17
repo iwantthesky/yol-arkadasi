@@ -15,6 +15,7 @@ namespace DortCuce.UnityGame
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Install()
         {
+            if (!Application.version.Contains("demo") && !Application.productName.Contains("Closed Playtest")) return;
             var marker = new GameObject("Closed Demo Mark");
             DontDestroyOnLoad(marker);
             marker.AddComponent<ClosedDemoMark>();

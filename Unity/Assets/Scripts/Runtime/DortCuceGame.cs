@@ -529,19 +529,19 @@ namespace DortCuce.UnityGame
             warningStyle ??= new GUIStyle(titleStyle) { alignment = TextAnchor.MiddleCenter, normal = { textColor = new Color(1f, 0.63f, 0.16f) } };
 
             GUI.Box(new Rect(18, 18, 390, 174), string.Empty);
-            GUI.Label(new Rect(34, 28, 350, 35), "DÖRT CÜCE BİR MOTOR · UNITY", titleStyle);
+            GUI.Label(new Rect(34, 28, 420, 35), "FOUR RIDERS, ONE MOTORCYCLE · UNITY", titleStyle);
             GUI.Label(new Rect(34, 68, 360, 110),
-                $"W/S Gaz–Fren   A/D Direksiyon\n←/→ Denge çubuğu   Q/E Vites   R Kurtar\nHız: {SpeedKph:0} km/sa   Vites: {gear}   Yatma: {LeanAngle:0}°\nParkur: %{Progress * 100f:0}", bodyStyle);
+                $"W/S Throttle–Brake   A/D Steering\n←/→ Balance pole   Q/E Gears   R Recover\nSpeed: {SpeedKph:0} km/h   Gear: {gear}   Lean: {LeanAngle:0}°\nCourse: {Progress * 100f:0}%", bodyStyle);
 
             if (Mathf.Abs(LeanAngle) > 42f)
             {
-                GUI.Label(new Rect(Screen.width * 0.5f - 210f, 30f, 420f, 45f), "PİKO! TERS YÖNE DENGE VER!", warningStyle);
+                GUI.Label(new Rect(Screen.width * 0.5f - 240f, 30f, 480f, 45f), "SHIFT YOUR WEIGHT THE OTHER WAY!", warningStyle);
             }
             if (finished)
             {
                 GUI.Box(new Rect(Screen.width * 0.5f - 260f, Screen.height * 0.5f - 80f, 520f, 160f), string.Empty);
                 GUI.Label(new Rect(Screen.width * 0.5f - 230f, Screen.height * 0.5f - 45f, 460f, 90f),
-                    "ÇAY OCAĞINA VARDINIZ!\nR ile parkuru yeniden sürebilirsin.", warningStyle);
+                    "YOU REACHED THE TEA STOP!\nPress R to ride the course again.", warningStyle);
             }
         }
     }

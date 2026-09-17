@@ -235,7 +235,7 @@ namespace DortCuce.UnityGame
                 grounded = true,
                 elevation = MotorCourse.Sample(0f).height,
                 heading = MotorCourse.CourseHeading(0f),
-                message = "Debriyaji cek, 1. vitese gec; gaz verirken debriyaji birak."
+                message = "Hold the clutch, shift to 1st, then release it while accelerating."
             };
             ResetTransientState();
             messageTime = 8f;
@@ -259,7 +259,7 @@ namespace DortCuce.UnityGame
                 engineRunning = true,
                 grounded = true,
                 heading = MotorCourse.CourseHeading(distance),
-                message = checkpoint == 0 ? "Baslangictasiniz. Debriyaj + 1. vites." : "Kontrol noktasindasiniz. Debriyaj + 1. vites."
+                message = checkpoint == 0 ? "At the start. Clutch + 1st gear." : "At the checkpoint. Clutch + 1st gear."
             };
             ResetTransientState();
             messageTime = 5f;
@@ -303,14 +303,14 @@ namespace DortCuce.UnityGame
             if (input.shift != 0)
             {
                 if (input.clutch <= .65f)
-                    Say("Vites icin debriyaji cek!", 2f);
+                    Say("Hold the clutch before shifting!", 2f);
                 else
                 {
                     int target = Mathf.Clamp(State.gear + (input.shift > 0 ? 1 : -1), 0, 5);
                     if (target != State.gear)
                     {
                         State.gear = target;
-                        Say(target == 0 ? "Bos vites (N)." : target + ". vites", 1.25f);
+                        Say(target == 0 ? "Neutral (N)." : "Gear " + target, 1.25f);
                     }
                 }
             }
@@ -322,9 +322,9 @@ namespace DortCuce.UnityGame
                     State.engineRunning = true;
                     State.rpm = IdleRpm;
                     stallTime = 0f;
-                    Say("Motor calisti. Gazla birlikte debriyaji yavas birak.", 3f);
+                    Say("Engine started. Slowly release the clutch while accelerating.", 3f);
                 }
-                else Say("Mars icin debriyaji cek veya bosa al.", 2.5f);
+                else Say("Hold the clutch or shift to neutral before ignition.", 2.5f);
             }
         }
 
@@ -333,7 +333,7 @@ namespace DortCuce.UnityGame
             State.elapsed += dt;
             if (State.crashed) return;
             messageTime = Mathf.Max(0f, messageTime - dt);
-            if (messageTime <= 0f) State.message = State.engineRunning ? string.Empty : "Motor stop etti. Debriyaj + mars.";
+            if (messageTime <= 0f) State.message = State.engineRunning ? string.Empty : "Engine stalled. Clutch + ignition.";
 
             float oldDistance = State.distance;
             float oldWorldX = WorldX(State);
@@ -360,7 +360,7 @@ namespace DortCuce.UnityGame
                 {
                     State.engineRunning = false;
                     State.rpm = 0f;
-                    Say("Motor stop etti. Debriyaji cek, marsa bas.", 5f);
+                    Say("Engine stalled. Hold the clutch and press ignition.", 5f);
                 }
                 else if (State.gear > 0 && wheelRpm < RedlineRpm)
                 {
@@ -427,7 +427,7 @@ namespace DortCuce.UnityGame
                 if (!MotorCourse.CanClimbMountain(groundHeight - State.elevation, climbGrade))
                 {
                     RestorePosition(oldDistance, oldWorldX);
-                    Crash("Dag yamaci cok dik! Daha yatay bir rota secin.");
+                    Crash("The mountain slope is too steep! Choose a gentler route.");
                     return;
                 }
             }
@@ -437,7 +437,7 @@ namespace DortCuce.UnityGame
 
             if (Mathf.Abs(State.lean) > 1.12f)
             {
-                Crash("Motor devrildi! Dengeden sorumlu oyuncu ters yone agirlik versin.");
+                Crash("The motorcycle fell! The balance rider must shift their weight the other way.");
                 return;
             }
 
@@ -454,7 +454,7 @@ namespace DortCuce.UnityGame
                 && Mathf.Abs(State.lateral) < surface.width * .5f + 3f)
             {
                 State.finished = true;
-                Say("Zirveye birlikte ulastiniz! Motor serbest; haritayi gezmeye devam edebilirsiniz.", 6f);
+                Say("You reached the summit together! The bike is free; keep exploring the map.", 6f);
             }
         }
 
@@ -535,7 +535,7 @@ namespace DortCuce.UnityGame
                 else
                 {
                     Crash(obstacle.kind == 1 ? "Kutuge hizli carptiniz! Yavaslayin veya ustunden atlayin."
-                        : obstacle.kind == 2 ? "Hareketli engele carptiniz. Acikligi bekleyin!" : "Kayaya carptiniz! Direksiyonla bosluktan gecin.");
+                        : obstacle.kind == 2 ? "You hit a moving barrier. Wait for an opening!" : "You hit a rock! Steer through the gap.");
                     return;
                 }
             }

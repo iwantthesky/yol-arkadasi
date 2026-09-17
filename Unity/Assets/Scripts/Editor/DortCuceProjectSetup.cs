@@ -15,13 +15,13 @@ namespace DortCuce.UnityGame.Editor
         private const string ScenePath = "Assets/Scenes/DortCuce.unity";
         private const string BuildPath = "Builds/WindowsUnity/Dort-Cuce-Bir-Motor-Unity.exe";
 
-        [MenuItem("Dört Cüce/Generate Scene")]
+        [MenuItem("Roadmates Legacy/Generate Scene")]
         public static void GenerateScene()
         {
             DortCuceTrackDefinition.Validate(DortCuceTrackDefinition.Create());
             Directory.CreateDirectory("Assets/Scenes");
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var bootstrap = new GameObject("Dört Cüce Runtime");
+            var bootstrap = new GameObject("Roadmates Legacy Runtime");
             bootstrap.AddComponent<DortCuceGame>();
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
@@ -30,14 +30,14 @@ namespace DortCuce.UnityGame.Editor
             Debug.Log("DORT_CUCE_SCENE_READY");
         }
 
-        [MenuItem("Dört Cüce/Generate And Build Windows")]
+        [MenuItem("Roadmates Legacy/Generate And Build Windows")]
         public static void GenerateAndBuild()
         {
             try
             {
                 GenerateScene();
                 PlayerSettings.companyName = "Engin";
-                PlayerSettings.productName = "Dört Cüce Bir Motor Unity";
+                PlayerSettings.productName = "Four Riders One Motorcycle";
                 PlayerSettings.bundleVersion = "0.1.0";
                 PlayerSettings.defaultScreenWidth = 1440;
                 PlayerSettings.defaultScreenHeight = 900;

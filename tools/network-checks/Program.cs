@@ -95,14 +95,14 @@ class Program
             Check(combined.shift == 1 && combined.ignition && combined.reset, "Buffered transmission and host reset arrive");
             combined = host.CombinedInput();
             Check(combined.shift == 0 && !combined.ignition && !combined.reset, "Network pulses consumed once per physics tick");
-            host.Publish(new BikeSnapshot { distance = 123f, speed = 8f, gear = 2, engineRunning = true, message = "Yol açık" }, true);
+            host.Publish(new BikeSnapshot { distance = 123f, speed = 8f, gear = 2, engineRunning = true, message = "Road clear" }, true);
             Wait(() => first.RemotePlaying && second.RemoteState != null && third.RemoteState != null, "Host playing state reaches all peers", all);
             Check(third.RemoteState.distance == 123f && first.RemoteState.gear == 2, "Snapshot values preserved");
             Pump(0.6f, all);
             combined = host.CombinedInput();
             Check(combined.throttle == 0 && combined.steer == 0 && combined.balance == 0 && combined.clutch == 0, "Input becomes neutral after 0.5 seconds without samples");
             extra.Join("127.0.0.1", "Extra", 49773);
-            Wait(() => !extra.IsClient && extra.Status.Contains("dolu"), "Full room gives explicit rejection", all);
+            Wait(() => !extra.IsClient && extra.Status.Contains("full"), "Full room gives explicit rejection", all);
             first.Leave();
             Wait(() => host.PlayerCount == 3 && second.LocalSlot == 1 && third.LocalSlot == 2, "Disconnect reallocates roles", all);
             first.Join("127.0.0.1", "Rejoined", 49773);
